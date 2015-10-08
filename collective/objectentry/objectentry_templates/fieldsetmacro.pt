@@ -1,27 +1,36 @@
 	<!-- Secondary fieldsets -->
   
-  <div metal:define-macro="test">
-  	<tal:general tal:condition='python: fieldset_text == "general"'
+  <div metal:define-macro="private_view">
+    <tal:general tal:condition='python: fieldset_text == "general"'
     tal:define='widgets group/widgets'>
     <!-- General -->
     <div class="row no-padding">
-        <h2 class="page-header" i18n:translate="">Entry</h2>
+        <h2 class="page-header" i18n:translate="">Binnenkomst</h2>
 
         <div class="form-horizontal">
           <tal:widget tal:replace="structure widgets/general_entry_transportNumber/@@ploneform-render-widget"/>
           <tal:widget tal:replace="structure widgets/general_entry_dateExpected/@@ploneform-render-widget"/>
           <tal:widget tal:replace="structure widgets/general_entry_entryDate/@@ploneform-render-widget"/>
+          <tal:widget tal:replace="structure widgets/general_entry_returnDate/@@ploneform-render-widget"/>
           <tal:widget tal:replace="structure widgets/general_entry_transportMethod/@@ploneform-render-widget"/>
           <tal:widget tal:replace="structure widgets/general_entry_reason/@@ploneform-render-widget"/>
           <tal:widget tal:replace="structure widgets/general_entry_currentOwner/@@ploneform-render-widget"/>
         </div>
         
-        <div class="form-horizontal gridfield">
+        <div class="form-horizontal">
           <tal:widget tal:replace="structure widgets/general_entry_depositor/@@ploneform-render-widget"/>
         </div>
 
-        <div class="form-horizontal gridfield">
+        <div class="form-horizontal">
+          <tal:widget tal:replace="structure widgets/general_entry_depositorContact/@@ploneform-render-widget"/>
+        </div>
+
+        <div class="form-horizontal">
           <tal:widget tal:replace="structure widgets/general_entry_destination/@@ploneform-render-widget"/>
+        </div>
+
+        <div class="form-horizontal">
+          <tal:widget tal:replace="structure widgets/general_entry_destinationContact/@@ploneform-render-widget"/>
         </div>
 
         <h2 class="page-header" i18n:translate="">Transport</h2>
@@ -34,6 +43,99 @@
           <tal:widget tal:replace="structure widgets/general_transport_courier/@@ploneform-render-widget"/>
         </div>
 
+        <h2 class="page-header" i18n:translate="">Aantal objecten</h2>
+
+        <div class="form-horizontal">
+          <tal:widget tal:replace="structure widgets/general_numberOfObjects_numberInFreightLetter/@@ploneform-render-widget"/>
+          <tal:widget tal:replace="structure widgets/general_numberOfObjects_numberDelivered/@@ploneform-render-widget"/>
+        </div>
+
+        <h2 class="page-header" i18n:translate="">Vrachtbrief</h2>
+
+        <div class="form-horizontal">
+          <tal:widget tal:replace="structure widgets/general_freightLetter_template/@@ploneform-render-widget"/>
+          <tal:widget tal:replace="structure widgets/general_freightLetter_digRef/@@ploneform-render-widget"/>
+        </div>
+
+        <h2 class="page-header" i18n:translate="">Totale verzekeringswaarde</h2>
+
+        <div class="form-horizontal">
+          <tal:widget tal:replace="structure widgets/general_totalInsuranceValue_insuranceValue/@@ploneform-render-widget"/>
+          <tal:widget tal:replace="structure widgets/general_totalInsuranceValue_currency/@@ploneform-render-widget"/>
+        </div>
+
+        <h2 class="page-header" i18n:translate="">Voorwaarden</h2>
+
+        <div class="form-horizontal gridfield hide-th">
+          <tal:widget tal:replace="structure widgets/general_requirements_requirements/@@ploneform-render-widget"/>
+        </div>
+
+        <h2 class="page-header" i18n:translate="">Bijzonderheden verpakking</h2>
+
+        <div class="form-horizontal gridfield hide-th">
+          <tal:widget tal:replace="structure widgets/general_requirements_packingNotes/@@ploneform-render-widget"/>
+        </div>
+
+        <h2 class="page-header" i18n:translate="">Digitale referenties</h2>
+
+        <div class="form-horizontal gridfield">
+          <tal:widget tal:replace="structure widgets/general_requirements_digitalReferences/@@ploneform-render-widget"/>
+        </div>
+
+        <h2 class="page-header" i18n:translate="">Opmerkingen</h2>
+
+        <div class="form-horizontal gridfield hide-th">
+          <tal:widget tal:replace="structure widgets/general_notes_notes/@@ploneform-render-widget"/>
+        </div>
+
+    </div>
+  </tal:general>
+  </div>
+
+  <div metal:define-macro="test">
+  	<tal:general tal:condition='python: fieldset_text == "general"'
+    tal:define='widgets group/widgets'>
+    <!-- General -->
+    <div class="row no-padding">
+        <tal:widget tal:replace="structure view/widgets/priref/@@ploneform-render-widget"/>
+
+        <h2 class="page-header" i18n:translate="">Entry</h2>
+
+        <div class="form-horizontal">
+          <tal:widget tal:replace="structure widgets/general_entry_transportNumber/@@ploneform-render-widget"/>
+          <tal:widget tal:replace="structure widgets/general_entry_dateExpected/@@ploneform-render-widget"/>
+          <tal:widget tal:replace="structure widgets/general_entry_entryDate/@@ploneform-render-widget"/>
+          <tal:widget tal:replace="structure widgets/general_entry_returnDate/@@ploneform-render-widget"/>
+          <tal:widget tal:replace="structure widgets/general_entry_transportMethod/@@ploneform-render-widget"/>
+          <tal:widget tal:replace="structure widgets/general_entry_reason/@@ploneform-render-widget"/>
+          <tal:widget tal:replace="structure widgets/general_entry_currentOwner/@@ploneform-render-widget"/>
+        </div>
+        
+        <div class="form-horizontal">
+          <tal:widget tal:replace="structure widgets/general_entry_depositor/@@ploneform-render-widget"/>
+        </div>
+
+        <div class="form-horizontal">
+          <tal:widget tal:replace="structure widgets/general_entry_depositorContact/@@ploneform-render-widget"/>
+        </div>
+
+        <div class="form-horizontal">
+          <tal:widget tal:replace="structure widgets/general_entry_destination/@@ploneform-render-widget"/>
+        </div>
+
+        <div class="form-horizontal">
+          <tal:widget tal:replace="structure widgets/general_entry_destinationContact/@@ploneform-render-widget"/>
+        </div>
+
+        <h2 class="page-header" i18n:translate="">Transport</h2>
+
+        <div class="form-horizontal gridfield">
+          <tal:widget tal:replace="structure widgets/general_transport_shipper/@@ploneform-render-widget"/>
+        </div>
+
+        <div class="form-horizontal">
+          <tal:widget tal:replace="structure widgets/general_transport_courier/@@ploneform-render-widget"/>
+        </div>
 
         <h2 class="page-header" i18n:translate="">Number of objects</h2>
 
@@ -58,13 +160,13 @@
 
         <h2 class="page-header" i18n:translate="">Requirements</h2>
 
-        <div class="form-horizontal gridfield">
+        <div class="form-horizontal gridfield hide-th">
           <tal:widget tal:replace="structure widgets/general_requirements_requirements/@@ploneform-render-widget"/>
         </div>
 
         <h2 class="page-header" i18n:translate="">Packing notes</h2>
 
-        <div class="form-horizontal gridfield">
+        <div class="form-horizontal gridfield hide-th">
           <tal:widget tal:replace="structure widgets/general_requirements_packingNotes/@@ploneform-render-widget"/>
         </div>
 
@@ -76,7 +178,7 @@
 
         <h2 class="page-header" i18n:translate="">Notes</h2>
 
-        <div class="form-horizontal gridfield">
+        <div class="form-horizontal gridfield hide-th">
           <tal:widget tal:replace="structure widgets/general_notes_notes/@@ploneform-render-widget"/>
         </div>
 
@@ -89,7 +191,7 @@
     <div class="row no-padding">
         <h2 class="page-header" i18n:translate="">Template for object data</h2>
 
-        <div class="form-horizontal gridfield">
+        <div class="form-horizontal">
           <tal:widget tal:replace="structure widgets/templateForObjectData_objectName/@@ploneform-render-widget"/>
         </div>
         
@@ -109,11 +211,11 @@
           <tal:widget tal:replace="structure widgets/templateForObjectData_creator/@@ploneform-render-widget"/>
         </div>
 
-        <div class="form-horizontal gridfield">
+        <div class="form-horizontal">
           <tal:widget tal:replace="structure widgets/templateForObjectData_material/@@ploneform-render-widget"/>
         </div>
 
-        <div class="form-horizontal gridfield">
+        <div class="form-horizontal">
           <tal:widget tal:replace="structure widgets/templateForObjectData_technique/@@ploneform-render-widget"/>
         </div>
 
@@ -132,5 +234,22 @@
 
     </div>
   </tal:template_for_object_data>
+
+  <tal:list_with_linked_objects tal:condition='python: fieldset_text == "list_with_linked_objects"'
+    tal:define='widgets group/widgets'>
+    <!-- list_with_linked_objects -->
+    <div class="row no-padding">
+      <h2 class="page-header" i18n:translate="">Transport content note</h2>
+      <div class="form-horizontal hide-label">
+        <tal:widget tal:replace="structure widgets/listWithLinkedObjects_transportContentNote/@@ploneform-render-widget"/>
+      </div>
+
+      <h2 class="page-header" i18n:translate="">Linked objects</h2>
+      <div class="form-horizontal gridfield">
+        <tal:widget tal:replace="structure widgets/listWithLinkedObjects_linkedObjects/@@ploneform-render-widget"/>
+      </div>
+
+    </div>
+  </tal:list_with_linked_objects>
 
 </div>

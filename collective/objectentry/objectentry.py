@@ -34,7 +34,7 @@ from z3c.relationfield.schema import RelationList
 #
 from collective.z3cform.datagridfield import DataGridFieldFactory, DictRow
 from collective.z3cform.datagridfield.blockdatagridfield import BlockDataGridFieldFactory
-
+from collective.z3cform.datagridfield.interfaces import IDataGridField
 
 # # # # # # # # # # # # # # # 
 # Dexterity imports         # 
@@ -44,6 +44,7 @@ from collective import dexteritytextindexer
 from plone.dexterity.browser.view import DefaultView
 from plone.dexterity.content import Container
 from plone.dexterity.browser import add, edit
+from plone.app.widgets.dx import AjaxSelectFieldWidget
 
 # # # # # # # # # # # # # # # # 
 # !Object specific imports!   #
@@ -52,14 +53,34 @@ from collective.objectentry import MessageFactory as _
 from .utils.vocabularies import *
 from .utils.interfaces import *
 from .utils.views import *
-from .utils.source import ObjPathSourceBinder
 
+from z3c.relationfield.schema import RelationChoice
+from z3c.relationfield.schema import RelationList
+from collective.object.utils.widgets import SimpleRelatedItemsFieldWidget, AjaxSingleSelectFieldWidget
+from collective.object.utils.source import ObjPathSourceBinder
+from plone.directives import dexterity, form
 
 # # # # # # # # # #
 # # # # # # # # # #
 # Object schema   #
 # # # # # # # # # #
 # # # # # # # # # #
+
+
+from plone.app.content.interfaces import INameFromTitle
+class INameFromTransportNumber(INameFromTitle):
+    def title():
+        """Return a processed title"""
+
+class NameFromTransportNumber(object):
+    implements(INameFromTransportNumber)
+    
+    def __init__(self, context):
+        self.context = context
+
+    @property
+    def title(self):
+        return self.context.general_entry_transportNumber
 
 class IObjectEntry(form.Schema):
     text = RichText(
@@ -80,9 +101,12 @@ class IObjectEntry(form.Schema):
     model.fieldset('general', label=_(u'General'), 
         fields=['general_entry_transportNumber',
                 'general_entry_dateExpected', 'general_entry_entryDate',
+                'general_entry_returnDate',
                 'general_entry_transportMethod', 'general_entry_reason',
                 'general_entry_currentOwner', 'general_entry_depositor',
-                'general_entry_destination', 'general_transport_shipper',
+                'general_entry_depositorContact',
+                'general_entry_destination', 'general_entry_destinationContact',
+                'general_transport_shipper',
                 'general_transport_courier', 'general_numberOfObjects_numberInFreightLetter',
                 'general_numberOfObjects_numberDelivered', 'general_freightLetter_template',
                 'general_freightLetter_digRef', 'general_totalInsuranceValue_insuranceValue',
@@ -96,7 +120,7 @@ class IObjectEntry(form.Schema):
     #
     general_entry_transportNumber =  schema.TextLine(
         title=_(u'Transport number'),
-        required=False
+        required=True
     )
     dexteritytextindexer.searchable('general_entry_transportNumber')
 
@@ -112,35 +136,90 @@ class IObjectEntry(form.Schema):
     )
     dexteritytextindexer.searchable('general_entry_entryDate')
 
-    general_entry_transportMethod = schema.TextLine(
+    general_entry_returnDate =  schema.TextLine(
+        title=_(u'Return date'),
+        required=False
+    )
+    dexteritytextindexer.searchable('general_entry_returnDate')
+
+    general_entry_transportMethod = schema.List(
         title=_(u'Transport method'),
-        required=False
+        required=False,
+        value_type=schema.TextLine(),
+        missing_value=[],
+        default=[]
     )
-    dexteritytextindexer.searchable('general_entry_transportMethod')
+    form.widget('general_entry_transportMethod', AjaxSingleSelectFieldWidget, vocabulary="collective.objectentry.transportmethod")
 
-    general_entry_reason = schema.TextLine(
-        title=_(u'Reason'),
-        required=False
+    general_entry_reason = schema.Choice(
+        title=_(u'Reason'), 
+        required=True,
+        vocabulary="collective.objectentry.reason", 
+        default="No value",
+        missing_value=" "
     )
-    dexteritytextindexer.searchable('general_entry_reason')
 
-    general_entry_currentOwner = schema.TextLine(
+    general_entry_currentOwner = RelationList(
         title=_(u'Current owner'),
+        default=[],
+        missing_value=[],
+        value_type=RelationChoice(
+            title=u"Related",
+            source=ObjPathSourceBinder(portal_type='PersonOrInstitution')
+        ),
         required=False
     )
-    dexteritytextindexer.searchable('general_entry_reason')
+    form.widget('general_entry_currentOwner', SimpleRelatedItemsFieldWidget, vocabulary='collective.object.relateditems')
 
-    general_entry_depositor = ListField(title=_(u'Depositor'),
-        value_type=DictRow(title=_(u'Depositor'), schema=IDepositor),
-        required=False)
-    form.widget(general_entry_depositor=BlockDataGridFieldFactory)
-    dexteritytextindexer.searchable('general_entry_depositor')
 
-    general_entry_destination = ListField(title=_(u'Destination'),
-        value_type=DictRow(title=_(u'Destination'), schema=IDestination),
-        required=False)
-    form.widget(general_entry_destination=BlockDataGridFieldFactory)
-    dexteritytextindexer.searchable('general_entry_destination')
+    general_entry_depositor = RelationList(
+        title=_(u'Depositor'),
+        default=[],
+        missing_value=[],
+        value_type=RelationChoice(
+            title=u"Related",
+            source=ObjPathSourceBinder(portal_type='PersonOrInstitution')
+        ),
+        required=False
+    )
+    form.widget('general_entry_depositor', SimpleRelatedItemsFieldWidget, vocabulary='collective.object.relateditems')
+
+    general_entry_depositorContact = RelationList(
+        title=_(u'Contact'),
+        default=[],
+        missing_value=[],
+        value_type=RelationChoice(
+            title=u"Related",
+            source=ObjPathSourceBinder(portal_type='PersonOrInstitution')
+        ),
+        required=False
+    )
+    form.widget('general_entry_depositorContact', SimpleRelatedItemsFieldWidget, vocabulary='collective.object.relateditems')
+
+    general_entry_destination = RelationList(
+        title=_(u'Destination'),
+        default=[],
+        missing_value=[],
+        value_type=RelationChoice(
+            title=u"Related",
+            source=ObjPathSourceBinder(portal_type='PersonOrInstitution')
+        ),
+        required=False
+    )
+    form.widget('general_entry_destination', SimpleRelatedItemsFieldWidget, vocabulary='collective.object.relateditems')
+
+
+    general_entry_destinationContact = RelationList(
+        title=_(u'Contact'),
+        default=[],
+        missing_value=[],
+        value_type=RelationChoice(
+            title=u"Related",
+            source=ObjPathSourceBinder(portal_type='PersonOrInstitution')
+        ),
+        required=False
+    )
+    form.widget('general_entry_destinationContact', SimpleRelatedItemsFieldWidget, vocabulary='collective.object.relateditems')
 
     #
     # Transport
@@ -148,7 +227,7 @@ class IObjectEntry(form.Schema):
     general_transport_shipper = ListField(title=_(u'Shipper'),
         value_type=DictRow(title=_(u'Shipper'), schema=IShipper),
         required=False)
-    form.widget(general_transport_shipper=DataGridFieldFactory)
+    form.widget(general_transport_shipper=BlockDataGridFieldFactory)
     dexteritytextindexer.searchable('general_transport_shipper')
 
     general_transport_courier = schema.TextLine(
@@ -175,11 +254,13 @@ class IObjectEntry(form.Schema):
     #
     # Freight letter
     #
-    general_freightLetter_template = schema.TextLine(
-        title=_(u'Template'),
-        required=False
+    general_freightLetter_template = schema.Choice(
+        title=_(u'Template'), 
+        required=True,
+        vocabulary=template_vocabulary, 
+        default="No value",
+        missing_value=" "
     )
-    dexteritytextindexer.searchable('general_freightLetter_template')
 
     general_freightLetter_digRef = schema.TextLine(
         title=_(u'(Dig.) ref.'),
@@ -220,7 +301,7 @@ class IObjectEntry(form.Schema):
     general_requirements_digitalReferences = ListField(title=_(u'Digital references'),
         value_type=DictRow(title=_(u'Digital references'), schema=IDigitalReferences),
         required=False)
-    form.widget(general_requirements_digitalReferences=DataGridFieldFactory)
+    form.widget(general_requirements_digitalReferences=BlockDataGridFieldFactory)
     dexteritytextindexer.searchable('general_requirements_digitalReferences')
 
     #
@@ -242,17 +323,20 @@ class IObjectEntry(form.Schema):
                 'templateForObjectData_createLinkedObjectRecords']
     )
 
-    templateForObjectData_objectName = ListField(title=_(u'Object name'),
-        value_type=DictRow(title=_(u'Object name'), schema=IObjectName),
-        required=False)
-    form.widget(templateForObjectData_objectName=DataGridFieldFactory)
-    dexteritytextindexer.searchable('templateForObjectData_objectName')
+    templateForObjectData_objectName = schema.List(
+        title=_(u'Object name'),
+        required=False,
+        value_type=schema.TextLine(),
+        missing_value=[],
+        default=[]
+    )
+    form.widget('templateForObjectData_objectName', AjaxSelectFieldWidget, vocabulary="collective.objectentry.objectname")
 
 
     templateForObjectData_title = ListField(title=_(u'Title'),
         value_type=DictRow(title=_(u'Title'), schema=ITitle),
         required=False)
-    form.widget(templateForObjectData_title=DataGridFieldFactory)
+    form.widget(templateForObjectData_title=BlockDataGridFieldFactory)
     dexteritytextindexer.searchable('templateForObjectData_title')
 
     templateForObjectData_description = schema.TextLine(
@@ -264,57 +348,73 @@ class IObjectEntry(form.Schema):
     templateForObjectData_date = ListField(title=_(u'Date'),
         value_type=DictRow(title=_(u'Date'), schema=IDate),
         required=False)
-    form.widget(templateForObjectData_date=DataGridFieldFactory)
+    form.widget(templateForObjectData_date=BlockDataGridFieldFactory)
     dexteritytextindexer.searchable('templateForObjectData_date')
 
     templateForObjectData_creator = ListField(title=_(u'Creator'),
         value_type=DictRow(title=_(u'Creator'), schema=ICreator),
         required=False)
-    form.widget(templateForObjectData_creator=DataGridFieldFactory)
+    form.widget(templateForObjectData_creator=BlockDataGridFieldFactory)
     dexteritytextindexer.searchable('templateForObjectData_creator')
 
-    templateForObjectData_material = ListField(title=_(u'Material'),
-        value_type=DictRow(title=_(u'Material'), schema=IMaterial),
-        required=False)
-    form.widget(templateForObjectData_material=DataGridFieldFactory)
-    dexteritytextindexer.searchable('templateForObjectData_material')
+    templateForObjectData_material = schema.List(
+        title=_(u'Material'),
+        required=False,
+        value_type=schema.TextLine(),
+        missing_value=[],
+        default=[]
+    )
+    form.widget('templateForObjectData_material', AjaxSelectFieldWidget, vocabulary="collective.objectentry.material")
 
-    templateForObjectData_technique = ListField(title=_(u'Technique'),
-        value_type=DictRow(title=_(u'Technique'), schema=ITechnique),
-        required=False)
-    form.widget(templateForObjectData_technique=DataGridFieldFactory)
-    dexteritytextindexer.searchable('templateForObjectData_technique')
+    templateForObjectData_technique = schema.List(
+        title=_(u'Technique'),
+        required=False,
+        value_type=schema.TextLine(),
+        missing_value=[],
+        default=[]
+    )
+    form.widget('templateForObjectData_technique', AjaxSelectFieldWidget, vocabulary="collective.objectentry.technique")
 
-    templateForObjectData_location = schema.TextLine(
+    templateForObjectData_location = schema.List(
         title=_(u'Location'),
-        required=False
+        required=False,
+        value_type=schema.TextLine(),
+        missing_value=[],
+        default=[]
     )
-    dexteritytextindexer.searchable('templateForObjectData_location')
+    form.widget('templateForObjectData_location', AjaxSelectFieldWidget, vocabulary="collective.objectentry.location")
 
-    templateForObjectData_currentOwner = schema.TextLine(
+    templateForObjectData_currentOwner = RelationList(
         title=_(u'Current owner'),
+        default=[],
+        missing_value=[],
+        value_type=RelationChoice(
+            title=u"Related",
+            source=ObjPathSourceBinder(portal_type='PersonOrInstitution')
+        ),
         required=False
     )
-    dexteritytextindexer.searchable('templateForObjectData_currentOwner')
+    form.widget('templateForObjectData_currentOwner', SimpleRelatedItemsFieldWidget, vocabulary='collective.object.relateditems')
 
     templateForObjectData_notes = ListField(title=_(u'Notes'),
         value_type=DictRow(title=_(u'Notes'), schema=INotes),
         required=False)
-    form.widget(templateForObjectData_notes=DataGridFieldFactory)
+    form.widget(templateForObjectData_notes=BlockDataGridFieldFactory)
     dexteritytextindexer.searchable('templateForObjectData_notes')
 
-    templateForObjectData_createLinkedObjectRecords = schema.TextLine(
+    templateForObjectData_createLinkedObjectRecords = schema.Bool(
         title=_(u'Create linked object records'),
-        required=False
+        required=False,
+        default=False,
+        missing_value=False
     )
-    dexteritytextindexer.searchable('templateForObjectData_createLinkedObjectRecords')
 
 
     model.fieldset('list_with_linked_objects', label=_(u'List with linked objects'), 
         fields=['listWithLinkedObjects_transportContentNote', 'listWithLinkedObjects_linkedObjects']
     )
 
-    listWithLinkedObjects_transportContentNote = schema.TextLine(
+    listWithLinkedObjects_transportContentNote = schema.Text(
         title=_(u'Transport content note'),
         required=False
     )
@@ -323,7 +423,7 @@ class IObjectEntry(form.Schema):
     listWithLinkedObjects_linkedObjects = ListField(title=_(u'Linked objects'),
         value_type=DictRow(title=_(u'Linked objects'), schema=ILinkedObjects),
         required=False)
-    form.widget(listWithLinkedObjects_linkedObjects=DataGridFieldFactory)
+    form.widget(listWithLinkedObjects_linkedObjects=BlockDataGridFieldFactory)
     dexteritytextindexer.searchable('listWithLinkedObjects_linkedObjects')
 
 
@@ -359,5 +459,8 @@ class EditForm(edit.DefaultEditForm):
         super(EditForm, self).update()
         for group in self.groups:
             for widget in group.widgets.values():
+                if IDataGridField.providedBy(widget):
+                    widget.auto_append = False
+                    widget.allow_reorder = True
                 alsoProvides(widget, IFormWidget)
 

@@ -34,13 +34,14 @@
       />
     
   <browser:page
-        name="view"
+        name="contents_view"
         for="collective.objectentry.objectentry.IObjectEntry"
         class="collective.objectentry.objectentry.ObjectEntryView"
         template="objectentry_templates/view.pt"
         permission="zope2.View"
+        title="View Content"
+        menu="plone_displayviews"
         />
-
 
   <!-- Custom Edit form -->
   <browser:page
@@ -84,6 +85,54 @@
       permission="zope.Public"
     />
 
+  <adapter for=".objectentry.IObjectEntry"
+    provides=".objectentry.INameFromTransportNumber"
+    factory=".objectentry.NameFromTransportNumber"
+    />
+
+  <adapter name="templateForObjectData_creator_productionPlace" factory=".utils.indexers.templateForObjectData_creator_productionPlace" />
+  <adapter name="listWithLinkedObjects_linkedObjects_curr" factory=".utils.indexers.listWithLinkedObjects_linkedObjects_curr" />
+  
+
   <!-- -*- extra stuff goes here -*- -->
+  <utility
+    component=".utils.vocabularies.TransportMethodVocabularyFactory"
+    name="collective.objectentry.transportmethod"
+    />
+
+    <utility
+    component=".utils.vocabularies.ReasonVocabularyFactory"
+    name="collective.objectentry.reason"
+    />
+
+    <utility
+    component=".utils.vocabularies.ObjectnameVocabularyFactory"
+    name="collective.objectentry.objectname"
+    />
+
+    <utility
+    component=".utils.vocabularies.ProductionPlaceVocabularyFactory"
+    name="collective.objectentry.productionPlace"
+    />
+
+     <utility
+    component=".utils.vocabularies.MaterialVocabularyFactory"
+    name="collective.objectentry.material"
+    />
+
+    <utility
+    component=".utils.vocabularies.TechniqueVocabularyFactory"
+    name="collective.objectentry.technique"
+    />
+
+    <utility
+    component=".utils.vocabularies.LocationVocabularyFactory"
+    name="collective.objectentry.location"
+    />
+
+    <utility
+    component=".utils.vocabularies.CurrencyVocabularyFactory"
+    name="collective.objectentry.currency"
+    />
 
 </configure>

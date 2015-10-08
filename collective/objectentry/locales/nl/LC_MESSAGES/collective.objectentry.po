@@ -492,7 +492,7 @@ msgstr "Vraagprijs"
 
 #: ../object.py
 msgid "Curr."
-msgstr "Valuta"
+msgstr "Val."
 
 #: ../object.py
 msgid "Purchase price"
@@ -1181,48 +1181,189 @@ msgid "Books"
 msgstr "Boeken"
 
 
+#: ../object.py
+msgid "Transport number"
+msgstr "Transportnummer"
+
+#: ../object.py
+msgid "Date (expected)"
+msgstr "Datum (verwacht)"
+
+#: ../object.py
+msgid "Entry date"
+msgstr "Datum binnenkomst"
+
+#: ../object.py
+msgid "Return date"
+msgstr "Retourdatum"
+
+#: ../object.py
+msgid "Transport method"
+msgstr "Transportmethode"
+
+#: ../object.py
+msgid "Reason"
+msgstr "Reden"
+
+#: ../object.py
+msgid "General"
+msgstr "Algemeen"
+
+#: ../object.py
+msgid "Current owner"
+msgstr "Eigenaar"
+
+#: ../object.py
+msgid "Depositor"
+msgstr "Afzender"
+
+#: ../object.py
+msgid "Contact"
+msgstr "Contactpersoon"
+
+#: ../object.py
+msgid "Destination"
+msgstr "Bestemming"
+
+#: ../object.py
+msgid "Shipper"
+msgstr "Transporteur"
+
+#: ../object.py
+msgid "Courier"
+msgstr "Koerier"
+
+#: ../object.py
+msgid "Number of objects"
+msgstr "Aantal objecten"
+
+#: ../object.py
+msgid "Number in freight letter"
+msgstr "Aantal in vrachtbrief"
+
+#: ../object.py
+msgid "Number delivered"
+msgstr "Geleverd aantal"
+
+#: ../object.py
+msgid "Freight letter"
+msgstr "Vrachtbrief"
+
+#: ../object.py
+msgid "Template"
+msgstr "Sjabloom"
+
+#: ../object.py
+msgid "Total insurance value"
+msgstr "Totale verzekeringswaarde"
+
+#: ../object.py
+msgid "Insurance value"
+msgstr "Verzekeringswaarde"
+
+#: ../object.py
+msgid "Requirements"
+msgstr "Voorwaarden"
+
+#: ../object.py
+msgid "Packing notes"
+msgstr "Bijzonderheden verpakking"
+
+#: ../object.py
+msgid "Digital references"
+msgstr "Digitale referenties"
+
+#: ../object.py
+msgid "Entry"
+msgstr "Binnenkomst"
+
+#: ../object.py
+msgid "purchase"
+msgstr "aankoop"
+
+#: ../object.py
+msgid "English"
+msgstr "Engels"
+
+#: ../object.py
+msgid "Dutch"
+msgstr "Nederlands"
 
 
+#: ../object.py
+msgid "Template for object data"
+msgstr "Sjabloon voor objectgegevens"
+
+#: ../object.py
+msgid "Date early"
+msgstr "Datum van"
+
+#: ../object.py
+msgid "Date late"
+msgstr "Datum tot"
+
+#: ../object.py
+msgid "Creator"
+msgstr "Vervaardiger"
+
+#: ../object.py
+msgid "Production place"
+msgstr "Vervaardigingsplaats"
+
+#: ../object.py
+msgid "Material"
+msgstr "Materiaal"
+
+#: ../object.py
+msgid "Technique"
+msgstr "Techniek"
+
+#: ../object.py
+msgid "Location"
+msgstr "Standplaats"
+
+#: ../object.py
+msgid "Current owner"
+msgstr "Huidige eigenaar"
+
+#: ../object.py
+msgid "Notes"
+msgstr "Opmerkingen"
+
+#: ../object.py
+msgid "Create linked object records"
+msgstr "Creeer gekoppelde objectrecords"
+
+#: ../object.py
+msgid "List with linked objects"
+msgstr "Lijst met gekoppelde objecten"
+
+#: ../object.py
+msgid "Transport content note"
+msgstr "Opmerking betreffende inhoud transport"
 
 
+#: ../object.py
+msgid "Linked objects"
+msgstr "Gekoppelde objecten"
 
 
+#: ../object.py
+msgid "Record number"
+msgstr "Recordnummer"
+
+#: ../object.py
+msgid "Transport reason"
+msgstr "Reden transport"
+
+#: ../object.py
+msgid "label_notes"
+msgstr "Bijzonderheden"
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#: ../object.py
+msgid "Condition checked"
+msgstr "Toestand gecontroleerd"
 
 
 

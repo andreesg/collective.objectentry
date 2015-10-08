@@ -7,6 +7,12 @@ from collective.objectentry import MessageFactory as _
 from ..utils.vocabularies import _createPriorityVocabulary, _createInsuranceTypeVocabulary
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
+from z3c.relationfield.schema import RelationChoice
+from z3c.relationfield.schema import RelationList
+from collective.object.utils.widgets import SimpleRelatedItemsFieldWidget, AjaxSingleSelectFieldWidget
+from collective.object.utils.source import ObjPathSourceBinder
+from plone.directives import dexterity, form
+
 priority_vocabulary = SimpleVocabulary(list(_createPriorityVocabulary()))
 insurance_type_vocabulary = SimpleVocabulary(list(_createInsuranceTypeVocabulary()))
 
@@ -37,14 +43,24 @@ class IDestination(Interface):
     contact = schema.TextLine(title=_(u'Contact'), required=False)
 
 class IShipper(Interface):
-    term = schema.TextLine(title=_(u'Shipper'), required=False)
+    shipper = RelationList(
+        title=_(u'Shipper'),
+        default=[],
+        missing_value=[],
+        value_type=RelationChoice(
+            title=u"Related",
+            source=ObjPathSourceBinder(portal_type='PersonOrInstitution')
+        ),
+        required=False
+    )
+    form.widget('shipper', SimpleRelatedItemsFieldWidget, vocabulary='collective.object.relateditems')
     contact = schema.TextLine(title=_(u'Contact'), required=False)
 
 class IRequirements(Interface):
-    term = schema.TextLine(title=_(u'Requirements'), required=False)
+    term = schema.Text(title=_(u'Requirements'), required=False)
 
 class IPackingNotes(Interface):
-    term = schema.TextLine(title=_(u'Packing notes'), required=False)
+    term = schema.Text(title=_(u'Packing notes'), required=False)
 
 class IDigitalReferences(Interface):
     type = schema.TextLine(title=_(u'Type'), required=False)
@@ -64,8 +80,26 @@ class IDate(Interface):
     dateLate = schema.TextLine(title=_(u'Date late'), required=False)
 
 class ICreator(Interface):
-    creator = schema.TextLine(title=_(u'Creator'), required=False)
-    productionPlace = schema.TextLine(title=_(u'Production place'), required=False)
+    creator = RelationList(
+        title=_(u'Creator'),
+        default=[],
+        missing_value=[],
+        value_type=RelationChoice(
+            title=u"Related",
+            source=ObjPathSourceBinder(portal_type='PersonOrInstitution')
+        ),
+        required=False
+    )
+    form.widget('creator', SimpleRelatedItemsFieldWidget, vocabulary='collective.object.relateditems')
+
+    productionPlace = schema.List(
+        title=_(u'Production place'),
+        required=False,
+        value_type=schema.TextLine(),
+        missing_value=[],
+        default=[]
+    )
+    form.widget('productionPlace', AjaxSingleSelectFieldWidget, vocabulary="collective.objectentry.productionPlace")
 
 class IMaterial(Interface):
     term = schema.TextLine(title=_(u'Material'), required=False)
@@ -74,18 +108,31 @@ class ITechnique(Interface):
     term = schema.TextLine(title=_(u'Technique'), required=False)
 
 class ILinkedObjects(Interface):
-    recordNumber = schema.TextLine(title=_(u'Record number'), required=False)
-    objectNumber = schema.TextLine(title=_(u'Object number'), required=False)
-    maker = schema.TextLine(title=_(u'Maker'), required=False)
-    objectName = schema.TextLine(title=_(u'Object name'), required=False)
-    title = schema.TextLine(title=_(u'Title'), required=False)
+    objectNumber = RelationList(
+        title=_(u'Object number'),
+        default=[],
+        missing_value=[],
+        value_type=RelationChoice(
+            title=u"Related",
+            source=ObjPathSourceBinder(portal_type='Object')
+        ),
+        required=False
+    )
+    form.widget('objectNumber', SimpleRelatedItemsFieldWidget, vocabulary='collective.object.relateditems')
     status = schema.TextLine(title=_(u'Status'), required=False)
-    conditionChecked = schema.TextLine(title=_(u'Condition checked'), required=False)
+    conditionChecked = schema.Bool(title=_(u'Condition checked'), required=False, default=False, missing_value=False)
     transportReason = schema.TextLine(title=_(u'Transport reason'), required=False)
     packing = schema.TextLine(title=_(u'Packing'), required=False)
     insuranceValue = schema.TextLine(title=_(u'Insurance value'), required=False)
-    curr = schema.TextLine(title=_(u'Curr.'), required=False)
+    curr = schema.List(
+        title=_(u'Curr.'),
+        required=False,
+        value_type=schema.TextLine(),
+        missing_value=[],
+        default=[]
+    )
+    form.widget('curr', AjaxSingleSelectFieldWidget, vocabulary="collective.objectentry.currency")
     date = schema.TextLine(title=_(u'Date'), required=False)
-    notes = schema.TextLine(title=_(u'Notes'), required=False)
+    notes = schema.Text(title=_(u'label_notes', default=u'Notes'), required=False)
 
 
