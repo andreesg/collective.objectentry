@@ -80,7 +80,7 @@ class NameFromTransportNumber(object):
 
     @property
     def title(self):
-        return self.context.general_entry_transportNumber
+        return self.context.title
 
 class IObjectEntry(form.Schema):
     text = RichText(
@@ -99,7 +99,7 @@ class IObjectEntry(form.Schema):
     # # # # # # # # # # # # # # 
     
     model.fieldset('general', label=_(u'General'), 
-        fields=['general_entry_transportNumber',
+        fields=['title',
                 'general_entry_dateExpected', 'general_entry_entryDate',
                 'general_entry_returnDate',
                 'general_entry_transportMethod', 'general_entry_reason',
@@ -118,11 +118,11 @@ class IObjectEntry(form.Schema):
     #
     # Entry
     #
-    general_entry_transportNumber =  schema.TextLine(
+    title =  schema.TextLine(
         title=_(u'Transport number'),
         required=True
     )
-    dexteritytextindexer.searchable('general_entry_transportNumber')
+    dexteritytextindexer.searchable('title')
 
     general_entry_dateExpected =  schema.TextLine(
         title=_(u'Date (expected)'),

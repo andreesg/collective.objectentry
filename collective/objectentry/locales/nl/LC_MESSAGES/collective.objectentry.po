@@ -375,6 +375,10 @@ msgid "Curr."
 msgstr "Val."
 
 #: ../object.py
+msgid "Currency"
+msgstr "Valuta"
+
+#: ../object.py
 msgid "Valuer"
 msgstr "Taxateur"
 
