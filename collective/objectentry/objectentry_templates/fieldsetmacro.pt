@@ -246,7 +246,7 @@
 
       <h2 class="page-header" i18n:translate="">Linked objects</h2>
       <div class="form-horizontal gridfield">
-        <tal:widget tal:replace="structure widgets/listWithLinkedObjects_linkedObjects/@@ploneform-render-widget"/>
+        <tal:widget tal:content="structure view/getRelatedObjects"/>
       </div>
 
     </div>

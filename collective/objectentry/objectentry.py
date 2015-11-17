@@ -60,6 +60,11 @@ from collective.object.utils.widgets import SimpleRelatedItemsFieldWidget, AjaxS
 from collective.object.utils.source import ObjPathSourceBinder
 from plone.directives import dexterity, form
 
+from zope.component import getUtility
+from zope.intid.interfaces import IIntIds
+from Acquisition import aq_inner
+from zc.relation.interfaces import ICatalog
+
 # # # # # # # # # #
 # # # # # # # # # #
 # Object schema   #
@@ -448,13 +453,55 @@ class AddForm(add.DefaultAddForm):
             for widget in group.widgets.values():
                 alsoProvides(widget, IFormWidget)
 
+    def getRelatedObjects(self):
+        catalog = getUtility(ICatalog)
+        intids = getUtility(IIntIds)
+
+        source_object = self.context
+
+        relations = catalog.findRelations(
+            dict(to_id=intids.getId(aq_inner(source_object)),
+                from_attribute="documentation_documentation")
+        )
+
+        structure = ""
+        for rel in list(relations):
+            from_object = rel.from_object
+            title = getattr(from_object, 'title', '')
+            obj_number = getattr(from_object, 'identification_identification_objectNumber', '')
+            url = from_object.absolute_url()
+            structure += "<p><a href='%s'><span>%s</span> - <span>%s</span></a></p>" %(url, obj_number, title)
+
+        return structure
+
 class AddView(add.DefaultAddView):
     form = AddForm
     
 
 class EditForm(edit.DefaultEditForm):
     template = ViewPageTemplateFile('objectentry_templates/edit.pt')
-    
+
+    def getRelatedObjects(self):
+        catalog = getUtility(ICatalog)
+        intids = getUtility(IIntIds)
+
+        source_object = self.context
+
+        relations = catalog.findRelations(
+            dict(to_id=intids.getId(aq_inner(source_object)),
+                from_attribute="transport_entry_number")
+        )
+
+        structure = ""
+        for rel in list(relations):
+            from_object = rel.from_object
+            title = getattr(from_object, 'title', '')
+            obj_number = getattr(from_object, 'identification_identification_objectNumber', '')
+            url = from_object.absolute_url()
+            structure += "<p><a href='%s'><span>%s</span> - <span>%s</span></a></p>" %(url, obj_number, title)
+
+        return structure
+
     def update(self):
         super(EditForm, self).update()
         for group in self.groups:
