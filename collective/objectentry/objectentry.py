@@ -416,7 +416,7 @@ class IObjectEntry(form.Schema):
 
 
     model.fieldset('list_with_linked_objects', label=_(u'List with linked objects'), 
-        fields=['listWithLinkedObjects_transportContentNote', 'listWithLinkedObjects_linkedObjects']
+        fields=['listWithLinkedObjects_transportContentNote']
     )
 
     listWithLinkedObjects_transportContentNote = schema.Text(
@@ -425,11 +425,11 @@ class IObjectEntry(form.Schema):
     )
     dexteritytextindexer.searchable('listWithLinkedObjects_transportContentNote')
 
-    listWithLinkedObjects_linkedObjects = ListField(title=_(u'Linked objects'),
+    """listWithLinkedObjects_linkedObjects = ListField(title=_(u'Linked objects'),
         value_type=DictRow(title=_(u'Linked objects'), schema=ILinkedObjects),
         required=False)
     form.widget(listWithLinkedObjects_linkedObjects=BlockDataGridFieldFactory)
-    dexteritytextindexer.searchable('listWithLinkedObjects_linkedObjects')
+    dexteritytextindexer.searchable('listWithLinkedObjects_linkedObjects')"""
 
 
 

@@ -243,10 +243,11 @@
       <div class="form-horizontal hide-label">
         <tal:widget tal:replace="structure widgets/listWithLinkedObjects_transportContentNote/@@ploneform-render-widget"/>
       </div>
-
+      <div class="object-listing">
       <h2 class="page-header" i18n:translate="">Linked objects</h2>
       <div class="form-horizontal gridfield">
         <tal:widget tal:content="structure view/getRelatedObjects"/>
+      </div>
       </div>
 
     </div>
